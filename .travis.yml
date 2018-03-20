@@ -27,4 +27,4 @@ branches:
     - blog-source
 env:
  global:
-   - GH_REF: https://github.com/xiaobin-zhang/xiaobin-zhang.github.io.git
+   - GH_REF: git@github.com:xiaobin-zhang/xiaobin-zhang.github.io.git
