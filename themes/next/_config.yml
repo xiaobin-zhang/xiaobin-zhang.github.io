@@ -144,9 +144,9 @@ site_state: true
 # Key is the link label showing to end users.
 # Value before `||` delimeter is the target permalink.
 # Value after `||` delimeter is the name of FontAwesome icon. If icon (with or without delimeter) is not specified, globe icon will be loaded.
-#social:
-  #GitHub: https://github.com/yourname || github
-  #E-Mail: mailto:yourname@gmail.com || envelope
+social:
+  GitHub: https://github.com/xiaobin-zhang || github
+  E-Mail: mailto:18235442561@163.com || envelope
   #Google: https://plus.google.com/yourname || google
   #Twitter: https://twitter.com/yourname || twitter
   #FB Page: https://www.facebook.com/yourname || facebook
@@ -178,6 +178,7 @@ links_layout: block
 #links_layout: inline
 #友情链接
 links:
+  Tiger: https://blog.abstiger.com/
   Dkvirus: http://tmd.dkvirus.com/
 
 # Sidebar Avatar
@@ -440,7 +441,7 @@ pangu: false
 #swiftype_key:
 
 # Baidu Analytics ID
-#baidu_analytics:
+baidu_analytics: 3d12a06bf11857d99ff132db9889f04e
 
 # Disqus
 disqus:
