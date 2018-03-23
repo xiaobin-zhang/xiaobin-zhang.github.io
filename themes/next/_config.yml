@@ -493,7 +493,7 @@ gitment:
   cleanly: false # Hide 'Powered by ...' on footer, and more
   language: # Force language, or auto switch by theme
   github_user: xiaobin-zhang # MUST HAVE, Your Github Username
-  github_repo: https://github.com/xiaobin-zhang/gitment_blog.git # MUST HAVE, The name of the repo you use to store Gitment comments
+  github_repo: https://github.com/xiaobin-zhang/xiaobin-zhang.github.io # MUST HAVE, The name of the repo you use to store Gitment comments
   client_id: 13db435764b1ec9bdc48 # MUST HAVE, Github client id for the Gitment
   client_secret: b2196bcad8c1db47b8ff29fcaa5512c188e3312a # EITHER this or proxy_gateway, Github access secret token for the Gitment
   proxy_gateway: # Address of api proxy, See: https://github.com/aimingoo/intersect
