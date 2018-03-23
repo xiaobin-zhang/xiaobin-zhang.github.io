@@ -455,7 +455,7 @@ disqus:
 
 # changyan
 changyan:
-  enable: false
+  enable: true
   appid: cytwAGfKL
   appkey: a81bbef12da43b92ee9853c9868226f0
 
@@ -486,7 +486,7 @@ valine:
 # Gitment
 # Introduction: https://imsun.net/posts/gitment-introduction/
 gitment:
-  enable: true
+  enable: false
   mint: true # RECOMMEND, A mint on Gitment, to support count, language and proxy_gateway
   count: true # Show comments count in post meta area
   lazy: ture # Comments lazy loading with a button
