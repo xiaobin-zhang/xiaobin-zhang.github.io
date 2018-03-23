@@ -80,3 +80,10 @@ deploy:
   type: git
   repo: git@github.com:xiaobin-zhang/xiaobin-zhang.github.io.git
   branch: master
+
+#LocalSearch  
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
