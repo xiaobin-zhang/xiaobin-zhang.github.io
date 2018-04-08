@@ -14,12 +14,12 @@ categories: 运维
 
 ## 步骤
 
-1. [GetDocker](/2018/04/09/docker-learning-getDocker) 
-2. [Get started](/2018/04/09/docker-learning-getStarted) 
-3. [Develop with Docker](/2018/04/09/docker-learning-developWithDocker) 
-4. [Configure networking](/2018/04/09/docker-docker-learning-configureNetworking)
-5. [Manage application data](/2018/04/09/docker-docker-learning-manageAppData) 
-6. [Run your app in production](/2018/04/09/docker-learning-runAppInProduction) 
+1. [GetDocker](/2018/04/08/docker-learning-getDocker) 
+2. [Get started](/2018/04/08/docker-learning-getStarted) 
+3. [Develop with Docker](/2018/04/08/docker-learning-developWithDocker) 
+4. [Configure networking](/2018/04/08/docker-docker-learning-configureNetworking)
+5. [Manage application data](/2018/04/08/docker-docker-learning-manageAppData) 
+6. [Run your app in production](/2018/04/08/docker-learning-runAppInProduction) 
 
 ## 扩展
 在学习完docker的基础知识后，接下来，开始了解docker周边应用的相关知识 - [Kubernetes](https://kubernetes.io/)
