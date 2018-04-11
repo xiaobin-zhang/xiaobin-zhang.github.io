@@ -4,7 +4,7 @@ date: 2018-04-08 16:01:23
 tags: docker
 categories: 运维
 ---
-{% asset_img get-docker-ico.jpg %} 
+{% asset_img get-docker.jpg %} 
 
 本篇主要的内容是：在linux操作系统下，下载安装Docker。
 

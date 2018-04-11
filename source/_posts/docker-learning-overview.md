@@ -6,11 +6,16 @@ categories: 运维
 ---
 
 {% asset_img docker.jpg %}   
-[Docker](https://www.docker.com)是一个**开源**的应用**容器**引擎。
-> [Docker is the world's leading software containerization platform.](https://www.docker.com/what-docker)  
 
-本篇主要的内容是：按照[官方文档](https://docs.docker.com/)进行系统性学习docker的步骤。
+本篇主要的内容是：按照[官方文档](https://docs.docker.com/)进行系统性学习docker的步骤概览。
 <!-- more -->
+
+## 概述
+
+[Docker](https://www.docker.com)是一个**开源**的应用**容器**引擎。
+> [Docker is the world's leading software containerization platform.](https://www.docker.com/what-docker)
+
+下面将列出Docker学习的过程，一共分为6部分，每部分独立为一个章节。
 
 ## 步骤
 
