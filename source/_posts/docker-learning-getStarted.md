@@ -102,7 +102,7 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 [root@VM_0_3_centos ~]# 
 ```
 
-#### Conclusion
+#### Conclusion orientation
 
 容器化可以使应用做到无缝的持续集成、持续部署,例如：
 * 应用间没有依赖
@@ -311,7 +311,177 @@ Login Succeeded
 
 本地机器上的镜像和远程服务器上的镜像之间的映射关系是：username/repository:tag。tag是可选的，但是强烈建议为每个版本的镜像打一个不同的版本标签。
 
+```sh
+[root@VM_0_3_centos ~]# docker tag --help
+
+Usage:  docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+
+Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+
+Options:
+
+[root@VM_0_3_centos ~]# 
+```
+下面就使用tag创建一个镜像，并给该进行指定版本
+
+```sh
+[root@VM_0_3_centos ~]# docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+friendlyhello       latest              551973057533        22 hours ago        150MB
+centos              latest              e934aafc2206        4 days ago          199MB
+redis               latest              c5355f8853e4        2 weeks ago         107MB
+python              2.7-slim            b16fde09c92c        2 weeks ago         139MB
+[root@VM_0_3_centos ~]# docker tag redis:latest xiaobinzhang/redis:0.0.1
+[root@VM_0_3_centos ~]# docker images
+REPOSITORY           TAG                 IMAGE ID            CREATED             SIZE
+friendlyhello        latest              551973057533        22 hours ago        150MB
+centos               latest              e934aafc2206        4 days ago          199MB
+redis                latest              c5355f8853e4        2 weeks ago         107MB
+xiaobinzhang/redis   0.0.1               c5355f8853e4        2 weeks ago         107MB
+python               2.7-slim            b16fde09c92c        2 weeks ago         139MB
+[root@VM_0_3_centos ~]# 
+```
+
+上面基于本地当前的redis镜像，重新制作了一个tag为0.0.1,镜像名为xiaobinzhang/redis的镜像。
+
+> **NOTE :**官方文档上的命令是 docker tag image username/repository:tag 但是，我自己在本机操作后，发现这样不可。
+```sh
+[root@VM_0_3_centos ~]# docker tag image centos xiaobinzhang/centos:0.0.1
+"docker tag" requires exactly 2 arguments.
+See 'docker tag --help'.
+
+Usage:  docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+
+Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+[root@VM_0_3_centos ~]#
+```
+
+##### Publish the image
+
+推送镜像。上传刚刚标记过的镜像到自己的仓库。
+
+```sh
+[root@VM_0_3_centos ~]# docker push xiaobinzhang/redis:0.0.1
+The push refers to repository [docker.io/xiaobinzhang/redis]
+dc532c93e196: Mounted from library/redis 
+4809734bf3c3: Mounted from library/redis 
+e7c4433350f1: Mounted from library/redis 
+b92d098685e5: Mounted from library/redis 
+27af3b14aa14: Mounted from library/redis 
+43efe85a991c: Mounted from library/redis 
+0.0.1: digest: sha256:1415c3ce635e1bb7e9d672c476f70fa9ddbe720f01d419babcdd2235103f7a85 size: 1571
+```
+
+上传成功后，登录https://hub.docker.com 到自己的账户下，可以看到刚刚上传成功的镜像。如果你设置的自己的仓库为公共的，那么，你上传的进项，可以被所有人使用。
+
+##### Pull and run the image from the remote repository
+
+从远程仓库下载镜像。  
+
+首先删除本地镜像，使用 **rmi** 删除镜像，使用 **rm** 删除容器。
+
+```sh
+[root@VM_0_3_centos ~]# docker rmi xiaobinzhang/redis:0.0.1 
+```
+
+然后下载运行远程的镜像
+
+```sh
+[root@VM_0_3_centos ~]# docker run xiaobinzhang/redis:0.0.1
+Unable to find image 'xiaobinzhang/redis:0.0.1' locally
+docker: Error response from daemon: pull access denied for xiaobinzhang/redis, repository does not exist or may require 'docker login'.
+See 'docker run --help'.
+```
+
+出现上面这种情况的原因是，我把刚上传的这个仓库设置成为了private的，所以下载失败。登入hub.docker手动置为public，再次执行。
+
+```sh
+[root@VM_0_3_centos ~]# docker run xiaobinzhang/redis:0.0.1
+Unable to find image 'xiaobinzhang/redis:0.0.1' locally
+0.0.1: Pulling from xiaobinzhang/redis
+Digest: sha256:1415c3ce635e1bb7e9d672c476f70fa9ddbe720f01d419babcdd2235103f7a85
+Status: Downloaded newer image for xiaobinzhang/redis:0.0.1
+1:C 11 Apr 08:10:48.377 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+1:C 11 Apr 08:10:48.377 # Redis version=4.0.9, bits=64, commit=00000000, modified=0, pid=1, just started
+1:C 11 Apr 08:10:48.377 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+1:M 11 Apr 08:10:48.379 * Running mode=standalone, port=6379.
+1:M 11 Apr 08:10:48.379 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.
+1:M 11 Apr 08:10:48.379 # Server initialized
+1:M 11 Apr 08:10:48.379 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+1:M 11 Apr 08:10:48.379 # WARNING you have Transparent Huge Pages (THP) support enabled in your kernel. This will create latency and memory usage issues with Redis. To fix this issue run the command 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' as root, and add it to your /etc/rc.local in order to retain the setting after a reboot. Redis must be restarted after THP is disabled.
+1:M 11 Apr 08:10:48.379 * Ready to accept connections
+^C1:signal-handler (1523434363) Received SIGINT scheduling shutdown...
+1:M 11 Apr 08:12:43.744 # User requested shutdown...
+1:M 11 Apr 08:12:43.744 * Saving the final RDB snapshot before exiting.
+1:M 11 Apr 08:12:43.753 * DB saved on disk
+1:M 11 Apr 08:12:43.754 # Redis is now ready to exit, bye bye...
+[root@VM_0_3_centos ~]# 
+```
+
+执行成功，其实可以使用 docker pull xiaobinzhang/redis:0.0.1 的方式，拉去远程仓库的镜像。只要将应用，包括该应用运行时需要的一切依赖、环境、源码等等制作为一个镜像，那么无论在什么地方，只要docker可以启动，并且能够拉去你上传的镜像，这个镜像不需要其他的配置和安装，就可以运行起来。
+
+#### Conclusion containers
+
+到现在为止，已经掌握了docker的基本操作命令。在简单的使用中，已经完全足够了。
+
+*  查看镜像列表
+*  查看运行时容器
+*  查看全部容器
+*  运行容器，并指定后台运行，指定容器别名，映射端口
+*  删除容器，删除镜像
+*  Dockerfile的组成和关键字
+*  从Dockerfile构建一个镜像
+*  为镜像打版本标签
+*  推送本地镜像到远程仓库
+*  从远程仓库拉取镜像到本地  
+
+接下来将要学习，如何通过在服务中运行容器来扩展我们的引用。
+
 ### <a name="Services">Services</a>
+
+官方链接：https://docs.docker.com/get-started/part3/
+
+在分布式应用中，我们把不同的模块称之为服务。在Docker中，我们可以把一个容器称之为一个服务。那么问题就来了，既然是服务，我们就要考虑一个服务需要满足的一些要求，比如它对外暴露的端口，编码，以及负载均衡，等等。  
+幸运的是，在docker中定义这些是非常的容易的。在Docker平台，定义、运行、弹性扩展等操作，只需要编辑 **docker-compose.yml**文件即可。
+
+##### docker-compose.yml
+
+touch一个名为docker-compose.yml的文件，复制以下信息到文件中。
+
+```
+version: "3"
+services:
+  web:
+    # replace username/repo:tag with your name and image details
+    image: username/repo:tag
+    deploy:
+      replicas: 5
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "80:80"
+    networks:
+      - webnet
+networks:
+  webnet:
+```
+
+这个**docker-compose.yml文件告诉Docker需要完成以下几件事情**
+
+* 从远程仓库拉去镜像
+* 启动5个镜像的实例，限制每个实例最多使用10%的CPU和50M的内存
+* 当着6个实例只要有一个失败时立即重启一个代替
+* 映射端口80:80
+* 从服务80端口对服务内部实例做负载均衡
+* 设置默认的负载均衡网络
+
+> **NOTE ：**yml文件的缩进格式不要写错，否则会在执行下面指令的时候，会报错。
+
+
 
 ### <a name="Swarms">Swarms</a>
 
