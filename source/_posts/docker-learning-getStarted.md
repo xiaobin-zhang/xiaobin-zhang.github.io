@@ -2,7 +2,9 @@
 title: docker-learning-getStarted
 date: 2018-04-08 16:01:45
 tags: Docker
-categories: 运维
+categories: 
+  - 学习
+  - 容器
 ---
 {% asset_img get-started.jpg %} 
 
@@ -481,13 +483,152 @@ networks:
 
 > **NOTE ：**yml文件的缩进格式不要写错，否则会在执行下面指令的时候，会报错。
 
+##### Run your new load-balanced app
 
+运行一个新的负载均衡应用。
+
+首先执行下面这条命令
+
+```sh
+[root@VM_0_3_centos dkt2]# docker swarm init
+```
+
+> **NOTE :** 在稍后的章节在解释**docker swarm init**这个命令的含义。但是此时如果不先执行这条语句的话，会抛一个错误“this node is not a swarm manager”。
+
+现在，来运行这个应用，此时我们只有一个docker-compose.yml文件，并且执行了一个**docker swarm init**命令。下面我们在给这个应用起一个名字：**getstartedlab**。
+
+```sh
+[root@VM_0_3_centos dkt3]# docker stack deploy -c docker-compose.yml getstartedlab
+Creating network getstartedlab_webnet
+Creating service getstartedlab_web
+```
+
+执行完成后，如果我们的这个镜像是被部署在一台主机上的话，那么此时这个一个单独的服务栈运行了5个容器实例。接下来我们来验证一下。
+
+```sh
+[root@VM_0_3_centos dkt3]# docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE                              PORTS
+dlo3u47w91el        getstartedlab_web   replicated          5/5                 xiaobinzhang/friendlyhello:0.0.1   *:80->80/tcp
+```
+
+现在可以看到，机器中有一个以刚刚我们给命名为前缀的web服务:**getstartedlab_web**,并且可以看到这个服务的ID、复制的数量、镜像名和对外的端口。
+
+一个单独运行的容器实例被称为**task**。每一个task都有一个唯一的ID，按照**docker-compose.yml**文件中配置的**replicas**个数，而启动几个task。用下面命令来列出这个服务的全部task列表。
+
+```sh
+[root@VM_0_3_centos dkt2]# docker service ps getstartedlab_web 
+ID                  NAME                  IMAGE                              NODE                DESIRED STATE       CURRENT STATE            ERROR               PORTS
+eevy540v8ni6        getstartedlab_web.1   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 21 minutes ago                       
+29k0z7sjhams        getstartedlab_web.2   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 21 minutes ago                       
+2h7ttm705fll        getstartedlab_web.3   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 21 minutes ago                       
+pszqwmkjffdp        getstartedlab_web.4   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 21 minutes ago                       
+swiw8plaoof0        getstartedlab_web.5   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 21 minutes ago                       
+[root@VM_0_3_centos dkt2]# 
+```
+
+现在执行以下**curl -4 http://localhost**来看一下负载均衡的效果。
+
+```sh
+[root@VM_0_3_centos ~]# curl -4 http://localhost
+<h3>Hello World!</h3><b>Hostname:</b> 54ef1e81d62d<br/><b>Visits:</b> <i>cannot connect to Redis, counter disabled</i>[root@VM_0_3_centos ~]# 
+[root@VM_0_3_centos ~]# curl -4 http://localhost
+<h3>Hello World!</h3><b>Hostname:</b> 04b047c14f53<br/><b>Visits:</b> <i>cannot connect to Redis, counter disabled</i>[root@VM_0_3_centos ~]# 
+[root@VM_0_3_centos ~]# curl -4 http://localhost
+<h3>Hello World!</h3><b>Hostname:</b> abb6fb33581b<br/><b>Visits:</b> <i>cannot connect to Redis, counter disabled</i>[root@VM_0_3_centos ~]# 
+[root@VM_0_3_centos ~]# curl -4 http://localhost
+<h3>Hello World!</h3><b>Hostname:</b> 446c7e5fcff2<br/><b>Visits:</b> <i>cannot connect to Redis, counter disabled</i>[root@VM_0_3_centos ~]# 
+[root@VM_0_3_centos ~]# curl -4 http://localhost
+<h3>Hello World!</h3><b>Hostname:</b> 09591611aae3<br/><b>Visits:</b> <i>cannot connect to Redis, counter disabled</i>[root@VM_0_3_centos ~]# 
+[root@VM_0_3_centos ~]# 
+```
+```sh
+[root@VM_0_3_centos ~]# docker container ls -q
+abb6fb33581b
+54ef1e81d62d
+446c7e5fcff2
+04b047c14f53
+09591611aae3
+```
+
+可以看到，每次访问结果返回的Hostname都不一样，并且Hostname都在这个web服务的ID列表中。
+
+##### Scale the app
+
+弹性扩展应用。可以通过修改**docker-compose.yml**文件中**replicas**的值来对该服务进行弹性扩容。修改之后，运行**docker stack deploy**命令即可生效。
+
+现在修改**replicas**的值由5改为4。并且重新部署。
+
+```sh
+[root@VM_0_3_centos dkt3]# docker stack deploy -c docker-compose.yml  getstartedlab
+Updating service getstartedlab_web (id: dlo3u47w91el1r259c2tt2fp1)
+```
+
+几秒钟后，检查一下
+
+```sh
+[root@VM_0_3_centos ~]# docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE                              PORTS
+dlo3u47w91el        getstartedlab_web   replicated          4/4                 xiaobinzhang/friendlyhello:0.0.1   *:80->80/tcp
+[root@VM_0_3_centos ~]# docker service ps getstartedlab_web 
+ID                  NAME                  IMAGE                              NODE                DESIRED STATE       CURRENT STATE            ERROR               PORTS
+eevy540v8ni6        getstartedlab_web.1   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 34 minutes ago                       
+29k0z7sjhams        getstartedlab_web.2   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 34 minutes ago                       
+2h7ttm705fll        getstartedlab_web.3   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 34 minutes ago                       
+pszqwmkjffdp        getstartedlab_web.4   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 34 minutes ago                       
+[root@VM_0_3_centos ~]# 
+```
+
+现在可以看到，机器中的service的**REPLICAS**信息已经发生了变化。并且运行中的容器实例也由之前的5个变为了4个。Docker平台可以就地更新，不需要杀死一些进程或容器。
+
+##### Take down the app and the swarm
+
+卸载应用集群。
+
+使用**docker stack rm**卸载应用
+
+```sh
+[root@VM_0_3_centos dkt3]# docker stack rm getstartedlab 
+Removing service getstartedlab_web
+Removing network getstartedlab_webnet
+```
+```sh
+[root@VM_0_3_centos ~]# docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+```
+
+现在已近卸载了**getstartedlab**应用
+
+再卸载swarm，swarm内容在今后的章节中介绍。
+
+```sh
+[root@VM_0_3_centos dkt3]# docker swarm leave --force
+Node left the swarm.
+```
+
+#### Conclusion services
+
+到目前为止，已近掌握了服务的概念，通过services的学习，掌握了以下结果知识点：
+
+* docker-compose.yml的配置
+* 通过修改配置文件达到服务的弹性扩展
+* 从docker-compose.yml启动服务的步骤
+* Docker平台就地更新的特性
+* 服务的卸载和swarm的卸载
+
+现在已近在容器学习中迈出了巨大的一步，在接下来，将学习在一个Docker集群中，怎样把我们的应用以真正的集群的方式运行。
 
 ### <a name="Swarms">Swarms</a>
 
+集群。
+
 ### <a name="Stacks">Stacks</a>
+
+栈。
 
 ### <a name="Dyapp">Deploy your app</a>
 
+部署应用。
 
-## 小结
+## 总结
+
+总结。

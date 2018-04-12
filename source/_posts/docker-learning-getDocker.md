@@ -2,7 +2,9 @@
 title: docker-learning-getDocker
 date: 2018-04-08 16:01:23
 tags: Docker
-categories: 运维
+categories: 
+  - 学习
+  - 容器
 ---
 {% asset_img get-docker.jpg %} 
 

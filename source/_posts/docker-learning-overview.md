@@ -2,7 +2,9 @@
 title: docker-learning-overview
 date: 2018-04-08 13:57:15
 tags: Docker
-categories: 运维
+categories: 
+  - 学习
+  - 容器
 ---
 
 {% asset_img docker.jpg %}   

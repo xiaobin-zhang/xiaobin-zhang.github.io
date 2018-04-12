@@ -2,7 +2,9 @@
 title: db2-use-notes
 date: 2018-04-12 11:41:27
 tags: DB2
-categories: 笔记
+categories: 
+  - 笔记
+  - 数据库
 ---
 {% asset_img db.jpg %} 
 
