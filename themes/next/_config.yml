@@ -178,8 +178,11 @@ links_layout: block
 #links_layout: inline
 #友情链接
 links:
-  Tiger: https://blog.abstiger.com/
-  Dkvirus: http://tmd.dkvirus.com/
+  abstiger的个人博客: https://blog.abstiger.com/  
+  dkvirus的个人博客: http://blog.dkvirus.com/   
+  reallinxu的个人博客: https://www.reallinxu.com/  
+  xiajunyi的个人博客: https://www.xiajunyi.com/
+
 
 # Sidebar Avatar
 # in theme directory(source/images): /images/avatar.gif
