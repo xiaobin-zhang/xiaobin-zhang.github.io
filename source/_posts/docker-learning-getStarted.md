@@ -619,7 +619,8 @@ Node left the swarm.
 
 ### <a name="Swarms">Swarms</a>
 
-集群。
+集群。接下来将继续学习在集群上部署我们的应用，在多台机器上运行。
+
 
 ### <a name="Stacks">Stacks</a>
 
