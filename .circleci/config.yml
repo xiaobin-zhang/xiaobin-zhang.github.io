@@ -1,26 +1,42 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+orbs:
+  node: circleci/node@4.7.0
+  
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+  build:
     docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+      - image: cimg/node:17.2.0
+    branches:
+    	only:
+    		- dev
     steps:
+    	- add_ssh_keys:
+    		fingerprints:
+    			- b5:f0:87:f4:07:35:78:f3:33:a7:ee:f4:ee:dc:c2:d8
       - checkout
-      - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+      - run: npm install
+      - run: hexo g
+    
+  deploy:
+  	docker:
+  		- image: cimg/node:17.2.0
+    steps:
+      - run: cd ./public
+      - run: git init
+      - run: git config user.name "xiaobin-zhang"
+  	 	- run: git config user.email "18235442561@163.com"
+  		- run: git add .
+  		- run: git commit -m "Update docs"
+  		- run: git push --force --quiet origin master
 
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  say-hello-workflow:
+  blog-workflow:
     jobs:
-      - say-hello
+      - build
+#      - deploy
+#      	requires:
+#      		- build
+#    		filters:
+#          branches:
+#            only: master
