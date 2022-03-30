@@ -15,7 +15,7 @@ jobs:
             - b5:f0:87:f4:07:35:78:f3:33:a7:ee:f4:ee:dc:c2:d8
       - checkout
       - run: npm install
-      - run: npm install hexo
+      - run: npm install hexo --save
       - run: hexo g
 
   deploy:
