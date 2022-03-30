@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run: npm install
       - run: npm install hexo --save
-      - run: hexo g
+ #     - run: hexo g
 
   deploy:
     docker:
