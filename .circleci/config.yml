@@ -8,27 +8,26 @@ jobs:
     docker:
       - image: cimg/node:17.2.0
     branches:
-    	only:
-    		- dev
+      only: dev
     steps:
-    	- add_ssh_keys:
-    		fingerprints:
-    			- b5:f0:87:f4:07:35:78:f3:33:a7:ee:f4:ee:dc:c2:d8
+      - add_ssh_keys:
+          fingerprints:
+            - b5:f0:87:f4:07:35:78:f3:33:a7:ee:f4:ee:dc:c2:d8
       - checkout
       - run: npm install
       - run: hexo g
     
   deploy:
-  	docker:
-  		- image: cimg/node:17.2.0
+    docker:
+      - image: cimg/node:17.2.0
     steps:
       - run: cd ./public
       - run: git init
       - run: git config user.name "xiaobin-zhang"
-  	 	- run: git config user.email "18235442561@163.com"
-  		- run: git add .
-  		- run: git commit -m "Update docs"
-  		- run: git push --force --quiet origin master
+      - run: git config user.email "18235442561@163.com"
+      - run: git add .
+      - run: git commit -m "Update docs"
+      - run: git push --force --quiet origin master
 
 workflows:
   blog-workflow:
