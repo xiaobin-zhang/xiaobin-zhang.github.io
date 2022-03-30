@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.6" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.6">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.6">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.6">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.6" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.6',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本篇的主要内容是：介绍Docker使用的基础知识。">
+<meta name="keywords" content="Docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker-learning-getStarted">
+<meta property="og:url" content="http://blog.xbzhang.com/2018/04/09/docker-learning-getStarted/index.html">
+<meta property="og:site_name" content="XBZ_BLOG">
+<meta property="og:description" content="本篇的主要内容是：介绍Docker使用的基础知识。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.xbzhang.com/2018/04/09/docker-learning-getStarted/get-started.jpg">
+<meta property="og:image" content="http://blog.xbzhang.com/2018/04/09/docker-learning-getStarted/contrast.jpg">
+<meta property="og:updated_time" content="2022-03-29T11:56:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="docker-learning-getStarted">
+<meta name="twitter:description" content="本篇的主要内容是：介绍Docker使用的基础知识。">
+<meta name="twitter:image" content="http://blog.xbzhang.com/2018/04/09/docker-learning-getStarted/get-started.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://blog.xbzhang.com/2018/04/09/docker-learning-getStarted/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>docker-learning-getStarted | XBZ_BLOG</title>
+  
+
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?3d12a06bf11857d99ff132db9889f04e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> 
+
+<div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XBZ_BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">张晓斌个人博客</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+          
+  <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+</li>
+
+      
+        
+        
+          
+  <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+</li>
+
+      
+        
+        
+          
+  <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+</li>
+
+      
+        
+        
+          
+  <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+</li>
+
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+    
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+    
+
+  
+
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.xbzhang.com/2018/04/09/docker-learning-getStarted/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="张晓斌">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XBZ_BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">docker-learning-getStarted</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-09T00:01:45+08:00">2018-04-08</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/学习/" itemprop="url" rel="index"><span itemprop="name">学习</span></a></span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/学习/容器/" itemprop="url" rel="index"><span itemprop="name">容器</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2018/04/09/docker-learning-getStarted/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2018/04/09/docker-learning-getStarted/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+             <span id="/2018/04/09/docker-learning-getStarted/" class="leancloud_visitors" data-flag-title="docker-learning-getStarted">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </span></div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/2018/04/09/docker-learning-getStarted/get-started.jpg"> 
+<p>本篇的主要内容是：介绍Docker使用的基础知识。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在上一章节中，已经安装好了Docker，在本篇中就要开始学习Docker的基本操作了。在本篇分为以下6部分来学习。</p>
+<ul>
+<li><a href="#Orientation">Orientation</a></li>
+<li><a href="#Containers">Containers</a></li>
+<li><a href="#Services">Services</a></li>
+<li><a href="#Swarms">Swarms</a></li>
+<li><a href="#Stacks">Stacks</a></li>
+<li><a href="#Dyapp">Deploy your app</a></li>
+</ul>
+<h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><h3 id="Orientation"><a href="#Orientation" class="headerlink" title="Orientation"></a><a name="Orientation">Orientation</a></h3><p>官方链接：<a href="https://docs.docker.com/get-started/" target="_blank" rel="noopener">https://docs.docker.com/get-started/</a></p>
+<p>Docker是为开发人员或系统管理员提供的，可以开发，部署，运行应用程序的容器平台。这种在linux下使用容器来部署应用的方式，被称作集装箱化，意思就是把应用当做货轮上的一个一个的集装箱，而linux就相当于货轮。容器技术不是新出现的技术，但是它的确是一种便于部署应用的一个很好的方式。</p>
+<blockquote>
+<p><strong>NOTE ：</strong> Containerization被翻译为<strong>集装箱化</strong>，听起来太难听了。接下来的文章中，我就直接叫它<strong>容器化</strong>了。 </p>
+</blockquote>
+<p>容器化之所以越来越受欢迎的原因是，采用这种方式有以下几个优点：</p>
+<ul>
+<li>灵活性：任何甚至最复杂的应用都可以采用该方案</li>
+<li>轻量级：容器充分利用和共享主机内核</li>
+<li>可替换：可以在应用运行过程中，部署和升级</li>
+<li>可移植：可以在本地构建，然后上传部署到云上，之后可以随处运行</li>
+<li>伸缩性：可以增加和自动分发容器副本</li>
+<li>堆栈：在运行中可以垂直堆叠服务</li>
+</ul>
+<h4 id="Images-and-containers"><a href="#Images-and-containers" class="headerlink" title="Images and containers"></a>Images and containers</h4><p>镜像和容器。通过运行一个镜像来启动一个容器。<br>一个镜像就是一个可运行的包，这个package包括了这个应用可运行的一切要素，例如应用源码、环境变量、运行时间、依赖、配置文件等。<br>一个容器就是内存中，被启动的镜像的一个运行时实例。可以用docker ps 来查看当前系统中正在运行中的容器</p>
+<h4 id="Containers-and-virtual-machines"><a href="#Containers-and-virtual-machines" class="headerlink" title="Containers and virtual machines"></a>Containers and virtual machines</h4><p>容器和虚拟机。在本地linux下运行的一个容器和其他的容器共享主机内核,它是不会长期的占用系统资源，比其他可执行的应用占用更小的内存，更轻量级。</p>
+<p>在虚拟机下，相比于使用访客用户来独立部署应用，Docker使用容器方式部署应用要占用更少的系统资源。<br><img src="/2018/04/09/docker-learning-getStarted/contrast.jpg"> </p>
+<h4 id="简单命令"><a href="#简单命令" class="headerlink" title="简单命令"></a>简单命令</h4><p>查看当前系统安装的Docker版本<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker -v</span></span><br><span class="line">Docker version 18.03.0-ce, build 0520e24</span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker version</span></span><br><span class="line">Client:</span><br><span class="line"> Version:       18.03.0-ce</span><br><span class="line"> API version:   1.37</span><br><span class="line"> Go version:    go1.9.4</span><br><span class="line"> Git commit:    0520e24</span><br><span class="line"> Built: Wed Mar 21 23:09:15 2018</span><br><span class="line"> OS/Arch:       linux/amd64</span><br><span class="line"> Experimental:  <span class="literal">false</span></span><br><span class="line"> Orchestrator:  swarm</span><br><span class="line"></span><br><span class="line">Server:</span><br><span class="line"> Engine:</span><br><span class="line">  Version:      18.03.0-ce</span><br><span class="line">  API version:  1.37 (minimum version 1.12)</span><br><span class="line">  Go version:   go1.9.4</span><br><span class="line">  Git commit:   0520e24</span><br><span class="line">  Built:        Wed Mar 21 23:13:03 2018</span><br><span class="line">  OS/Arch:      linux/amd64</span><br><span class="line">  Experimental: <span class="literal">false</span></span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure></p>
+<p>查看当前系统下的镜像<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">hello-world         latest              f2a91732366c        4 months ago        1.85kB</span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure></p>
+<p>查看当前系统下正在运行容器<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker ps</span></span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES</span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure></p>
+<p>查看当前系统下全部的容器<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker ps -a</span></span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                    PORTS               NAMES</span><br><span class="line">7570316825e8        hello-world         <span class="string">"/hello"</span>            19 hours ago        Exited (0) 19 hours ago                       relaxed_pasteur</span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="Conclusion-orientation"><a href="#Conclusion-orientation" class="headerlink" title="Conclusion orientation"></a>Conclusion orientation</h4><p>容器化可以使应用做到无缝的持续集成、持续部署,例如：</p>
+<ul>
+<li>应用间没有依赖</li>
+<li>可以将应用更新推送到任意其他的分支应用</li>
+<li>可以优化资源配比</li>
+</ul>
+<p>使用Docker，要做到可弹性化的应用只需要一个配置文件即可，而不需要再运行笨重的虚拟机。</p>
+<h3 id="Containers"><a href="#Containers" class="headerlink" title="Containers"></a><a name="Containers">Containers</a></h3><p>官方链接：<a href="https://docs.docker.com/get-started/" target="_blank" rel="noopener">https://docs.docker.com/get-started/</a></p>
+<p>在以前，如果我们需要开始写一个Python App时，首先需要做的，是在自己的机器上，搭建Python的运行环境，这样就需要我们必须安装正确合理的运行环境，并且要和生成还款一致。<br>现在，使用Docker，只需要获取一个便捷的Python运行时的镜像即可，不需要安装。然后,再添加一些运行必要的依赖即可，这些都可以在进行中完成。<br>这些便捷的镜像，是通过Dockerfile来定义的。</p>
+<h4 id="Define-a-container-with-Dockerfile"><a href="#Define-a-container-with-Dockerfile" class="headerlink" title="Define a container with Dockerfile"></a>Define a container with Dockerfile</h4><p>使用Dockerfile来定义一个容器。Dockerfile定义了容器内的环境。在这种环境中，对网络接口和磁盘驱动器等资源的访问都是虚拟化的，这与系统其他部分是隔离的。需要自己映射到容器外部的端口，可以指定需要copy到容器的文件。不管怎样，当你定义完成之后，这个你构建的容器，无论在哪里运行，它的运行结果和行为都完全和你预期的一致。</p>
+<p>创建一个空目录，cd到该目录下，touch一个名为Dockerfile文件,复制下面的内容到Dockerfile文件中，注意要文件中，语句的注释。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># Use an official Python runtime as a parent image</span><br><span class="line">FROM python:2.7-slim</span><br><span class="line"></span><br><span class="line"># Set the working directory to /app</span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line"># Copy the current directory contents into the container at /app</span><br><span class="line">ADD . /app</span><br><span class="line"></span><br><span class="line"># Install any needed packages specified in requirements.txt</span><br><span class="line">RUN pip install --trusted-host pypi.python.org -r requirements.txt</span><br><span class="line"></span><br><span class="line"># Make port 80 available to the world outside this container</span><br><span class="line">EXPOSE 80</span><br><span class="line"></span><br><span class="line"># Define environment variable</span><br><span class="line">ENV NAME World</span><br><span class="line"></span><br><span class="line"># Run app.py when the container launches</span><br><span class="line">CMD [&quot;python&quot;, &quot;app.py&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>上面Dockerfile提到的文件app.py和requirements.txt还没有建立，接下来，先来创建它们</p>
+<h4 id="The-app-itself"><a href="#The-app-itself" class="headerlink" title="The app itself"></a>The app itself</h4><p>在Dockerfile文件的同级目录下再创建两个文件，requirements.txt和app.py，这样我们这个简单的app就完成了。</p>
+<h5 id="requirements-txt"><a href="#requirements-txt" class="headerlink" title="requirements.txt"></a>requirements.txt</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Flask</span><br><span class="line">Redis</span><br></pre></td></tr></table></figure>
+<h5 id="app-py"><a href="#app-py" class="headerlink" title="app.py"></a>app.py</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">from flask import Flask</span><br><span class="line">from redis import Redis, RedisError</span><br><span class="line">import os</span><br><span class="line">import socket</span><br><span class="line"></span><br><span class="line"># Connect to Redis</span><br><span class="line">redis = Redis(host=&quot;redis&quot;, db=0, socket_connect_timeout=2, socket_timeout=2)</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line">@app.route(&quot;/&quot;)</span><br><span class="line">def hello():</span><br><span class="line">    try:</span><br><span class="line">        visits = redis.incr(&quot;counter&quot;)</span><br><span class="line">    except RedisError:</span><br><span class="line">        visits = &quot;&lt;i&gt;cannot connect to Redis, counter disabled&lt;/i&gt;&quot;</span><br><span class="line"></span><br><span class="line">    html = &quot;&lt;h3&gt;Hello &#123;name&#125;!&lt;/h3&gt;&quot; \</span><br><span class="line">           &quot;&lt;b&gt;Hostname:&lt;/b&gt; &#123;hostname&#125;&lt;br/&gt;&quot; \</span><br><span class="line">           &quot;&lt;b&gt;Visits:&lt;/b&gt; &#123;visits&#125;&quot;</span><br><span class="line">    return html.format(name=os.getenv(&quot;NAME&quot;, &quot;world&quot;), hostname=socket.gethostname(), visits=visits)</span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    app.run(host=&apos;0.0.0.0&apos;, port=80)</span><br></pre></td></tr></table></figure>
+<p>构建Docker镜像</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos dkt]<span class="comment"># docker build -t friendlyhello .</span></span><br><span class="line">Sending build context to Docker daemon  4.608kB</span><br><span class="line">Step 1/7 : FROM python:2.7-slim</span><br><span class="line">2.7-slim: Pulling from library/python</span><br><span class="line">b0568b191983: Pull complete </span><br><span class="line">55a7da9473ae: Pull complete </span><br><span class="line">422d2e7f1272: Pull complete </span><br><span class="line">8fb86f1cff1c: Pull complete </span><br><span class="line">Digest: sha256:9e24a026a55ca1d9a7284db30ed846b7190a3d7f557edf493b454bff362ed64c</span><br><span class="line">Status: Downloaded newer image <span class="keyword">for</span> python:2.7-slim</span><br><span class="line"> ---&gt; b16fde09c92c</span><br><span class="line">Step 2/7 : WORKDIR /app</span><br><span class="line">Removing intermediate container a2c0422a46fa</span><br><span class="line"> ---&gt; b3f84ed88338</span><br><span class="line">Step 3/7 : ADD . /app</span><br><span class="line"> ---&gt; 74a6295086c5</span><br><span class="line">Step 4/7 : RUN pip install --trusted-host pypi.python.org -r requirements.txt</span><br><span class="line"> ---&gt; Running <span class="keyword">in</span> d3b6fc400e6d</span><br><span class="line">Collecting Flask (from -r requirements.txt (line 1))</span><br><span class="line">  Downloading Flask-0.12.2-py2.py3-none-any.whl (83kB)</span><br><span class="line">Collecting Redis (from -r requirements.txt (line 2))</span><br><span class="line">  Downloading redis-2.10.6-py2.py3-none-any.whl (64kB)</span><br><span class="line">Collecting itsdangerous&gt;=0.21 (from Flask-&gt;-r requirements.txt (line 1))</span><br><span class="line">  Downloading itsdangerous-0.24.tar.gz (46kB)</span><br><span class="line">Collecting Jinja2&gt;=2.4 (from Flask-&gt;-r requirements.txt (line 1))</span><br><span class="line">  Downloading Jinja2-2.10-py2.py3-none-any.whl (126kB)</span><br><span class="line">Collecting Werkzeug&gt;=0.7 (from Flask-&gt;-r requirements.txt (line 1))</span><br><span class="line">  Downloading Werkzeug-0.14.1-py2.py3-none-any.whl (322kB)</span><br><span class="line">Collecting click&gt;=2.0 (from Flask-&gt;-r requirements.txt (line 1))</span><br><span class="line">  Downloading click-6.7-py2.py3-none-any.whl (71kB)</span><br><span class="line">Collecting MarkupSafe&gt;=0.23 (from Jinja2&gt;=2.4-&gt;Flask-&gt;-r requirements.txt (line 1))</span><br><span class="line">  Downloading MarkupSafe-1.0.tar.gz</span><br><span class="line">Building wheels <span class="keyword">for</span> collected packages: itsdangerous, MarkupSafe</span><br><span class="line">  Running setup.py bdist_wheel <span class="keyword">for</span> itsdangerous: started</span><br><span class="line">  Running setup.py bdist_wheel <span class="keyword">for</span> itsdangerous: finished with status <span class="string">'done'</span></span><br><span class="line">  Stored <span class="keyword">in</span> directory: /root/.cache/pip/wheels/<span class="built_in">fc</span>/a8/66/24d655233c757e178d45dea2de22a04c6d92766abfb741129a</span><br><span class="line">  Running setup.py bdist_wheel <span class="keyword">for</span> MarkupSafe: started</span><br><span class="line">  Running setup.py bdist_wheel <span class="keyword">for</span> MarkupSafe: finished with status <span class="string">'done'</span></span><br><span class="line">  Stored <span class="keyword">in</span> directory: /root/.cache/pip/wheels/88/a7/30/e39a54a87bcbe25308fa3ca64e8ddc75d9b3e5afa21ee32d57</span><br><span class="line">Successfully built itsdangerous MarkupSafe</span><br><span class="line">Installing collected packages: itsdangerous, MarkupSafe, Jinja2, Werkzeug, click, Flask, Redis</span><br><span class="line">Successfully installed Flask-0.12.2 Jinja2-2.10 MarkupSafe-1.0 Redis-2.10.6 Werkzeug-0.14.1 click-6.7 itsdangerous-0.24</span><br><span class="line">Removing intermediate container d3b6fc400e6d</span><br><span class="line"> ---&gt; 4df35974b59f</span><br><span class="line">Step 5/7 : EXPOSE 80</span><br><span class="line"> ---&gt; Running <span class="keyword">in</span> d22d83548539</span><br><span class="line">Removing intermediate container d22d83548539</span><br><span class="line"> ---&gt; 7e7c88118497</span><br><span class="line">Step 6/7 : ENV NAME World</span><br><span class="line"> ---&gt; Running <span class="keyword">in</span> 5a9c2cfde214</span><br><span class="line">Removing intermediate container 5a9c2cfde214</span><br><span class="line"> ---&gt; 462234d15e1a</span><br><span class="line">Step 7/7 : CMD [<span class="string">"python"</span>, <span class="string">"app.py"</span>]</span><br><span class="line"> ---&gt; Running <span class="keyword">in</span> 26ce9fb35867</span><br><span class="line">Removing intermediate container 26ce9fb35867</span><br><span class="line"> ---&gt; 551973057533</span><br><span class="line">Successfully built 551973057533</span><br><span class="line">Successfully tagged friendlyhello:latest</span><br><span class="line">[root@VM_0_3_centos dkt]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>查看当前镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos dkt]# docker images</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">friendlyhello       latest              551973057533        6 minutes ago       150MB</span><br><span class="line">python              2.7-slim            b16fde09c92c        2 weeks ago         139MB</span><br></pre></td></tr></table></figure>
+<p>这里和官网不同的是，使用build命令构建之后，会生成两个镜像。进过测试发现，在Dockerfile中配置几个FROM … ,构建后就会创建FROM 后面指定的镜像。</p>
+<h4 id="Run-app"><a href="#Run-app" class="headerlink" title="Run app"></a>Run app</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos dkt]# docker run -p 3000:80 friendlyhello</span><br><span class="line"> * Running on http://0.0.0.0:80/ (Press CTRL+C to quit)</span><br><span class="line"></span><br><span class="line">[root@VM_0_3_centos ~]# docker ps </span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                  NAMES</span><br><span class="line">975aedd8d085        friendlyhello       &quot;python app.py&quot;     35 seconds ago      Up 35 seconds       0.0.0.0:3000-&gt;80/tcp   focused_villani</span><br><span class="line">[root@VM_0_3_centos ~]#</span><br></pre></td></tr></table></figure>
+<p>使用 run 命令启动一个镜像，可以使用 -p 命令指定容器外部的端口和内部端口的映射，上面命令指定外部端口为3000映射容器内部的80端口。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos dkt]<span class="comment"># docker run -d --name my-first-app friendlyhello</span></span><br><span class="line">7417b8f4d62e05a2ba32dde6f9ae64b3bd5e6ae4c411cca405f3730e3f4e8be5</span><br><span class="line">[root@VM_0_3_centos dkt]<span class="comment"># docker ps</span></span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES</span><br><span class="line">7417b8f4d62e        friendlyhello       <span class="string">"python app.py"</span>     3 seconds ago       Up 2 seconds        80/tcp              my-first-app</span><br><span class="line">[root@VM_0_3_centos dkt]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>使用 -d 参数让容器在后台运行，使用 –name 参数后面加自定义的名字，可以为启动的容器命名。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos dkt]<span class="comment"># docker logs my-first-app </span></span><br><span class="line"> * Running on http://0.0.0.0:80/ (Press CTRL+C to quit)</span><br><span class="line">[root@VM_0_3_centos dkt]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>使用 docker logs 后面加容器名，可以打印出容器的日志信息。</p>
+<h4 id="Share-your-image"><a href="#Share-your-image" class="headerlink" title="Share your image"></a>Share your image</h4><p>分享镜像。如果是首次登陆的话，需要到<a href="https://hub.docker.com" target="_blank" rel="noopener">官网</a>去注册一个账户。</p>
+<h5 id="Login"><a href="#Login" class="headerlink" title="Login"></a>Login</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos dkt2]<span class="comment"># docker login</span></span><br><span class="line">Login with your Docker ID to push and pull images from Docker Hub. If you don<span class="string">'t have a Docker ID, head over to https://hub.docker.com to create one.</span></span><br><span class="line"><span class="string">Username: xiaobinzhang</span></span><br><span class="line"><span class="string">Password: </span></span><br><span class="line"><span class="string">Login Succeeded</span></span><br><span class="line"><span class="string">[root@VM_0_3_centos dkt2]#</span></span><br></pre></td></tr></table></figure>
+<h5 id="Tag-the-image"><a href="#Tag-the-image" class="headerlink" title="Tag the image"></a>Tag the image</h5><p>本地机器上的镜像和远程服务器上的镜像之间的映射关系是：username/repository:tag。tag是可选的，但是强烈建议为每个版本的镜像打一个不同的版本标签。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker tag --help</span></span><br><span class="line"></span><br><span class="line">Usage:  docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]</span><br><span class="line"></span><br><span class="line">Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line"></span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>下面就使用tag创建一个镜像，并给该进行指定版本</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">friendlyhello       latest              551973057533        22 hours ago        150MB</span><br><span class="line">centos              latest              e934aafc2206        4 days ago          199MB</span><br><span class="line">redis               latest              c5355f8853e4        2 weeks ago         107MB</span><br><span class="line">python              2.7-slim            b16fde09c92c        2 weeks ago         139MB</span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker tag redis:latest xiaobinzhang/redis:0.0.1</span></span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY           TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">friendlyhello        latest              551973057533        22 hours ago        150MB</span><br><span class="line">centos               latest              e934aafc2206        4 days ago          199MB</span><br><span class="line">redis                latest              c5355f8853e4        2 weeks ago         107MB</span><br><span class="line">xiaobinzhang/redis   0.0.1               c5355f8853e4        2 weeks ago         107MB</span><br><span class="line">python               2.7-slim            b16fde09c92c        2 weeks ago         139MB</span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>上面基于本地当前的redis镜像，重新制作了一个tag为0.0.1,镜像名为xiaobinzhang/redis的镜像。</p>
+<blockquote>
+<p><strong>NOTE :</strong>官方文档上的命令是 docker tag image username/repository:tag 但是，我自己在本机操作后，发现这样不可。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker tag image centos xiaobinzhang/centos:0.0.1</span></span><br><span class="line"><span class="string">"docker tag"</span> requires exactly 2 arguments.</span><br><span class="line">See <span class="string">'docker tag --help'</span>.</span><br><span class="line"></span><br><span class="line">Usage:  docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]</span><br><span class="line"></span><br><span class="line">Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE</span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h5 id="Publish-the-image"><a href="#Publish-the-image" class="headerlink" title="Publish the image"></a>Publish the image</h5><p>推送镜像。上传刚刚标记过的镜像到自己的仓库。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker push xiaobinzhang/redis:0.0.1</span></span><br><span class="line">The push refers to repository [docker.io/xiaobinzhang/redis]</span><br><span class="line">dc532c93e196: Mounted from library/redis </span><br><span class="line">4809734bf3c3: Mounted from library/redis </span><br><span class="line">e7c4433350f1: Mounted from library/redis </span><br><span class="line">b92d098685e5: Mounted from library/redis </span><br><span class="line">27af3b14aa14: Mounted from library/redis </span><br><span class="line">43efe85a991c: Mounted from library/redis </span><br><span class="line">0.0.1: digest: sha256:1415c3ce635e1bb7e9d672c476f70fa9ddbe720f01d419babcdd2235103f7a85 size: 1571</span><br></pre></td></tr></table></figure>
+<p>上传成功后，登录<a href="https://hub.docker.com" target="_blank" rel="noopener">https://hub.docker.com</a> 到自己的账户下，可以看到刚刚上传成功的镜像。如果你设置的自己的仓库为公共的，那么，你上传的进项，可以被所有人使用。</p>
+<h5 id="Pull-and-run-the-image-from-the-remote-repository"><a href="#Pull-and-run-the-image-from-the-remote-repository" class="headerlink" title="Pull and run the image from the remote repository"></a>Pull and run the image from the remote repository</h5><p>从远程仓库下载镜像。  </p>
+<p>首先删除本地镜像，使用 <strong>rmi</strong> 删除镜像，使用 <strong>rm</strong> 删除容器。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker rmi xiaobinzhang/redis:0.0.1</span></span><br></pre></td></tr></table></figure>
+<p>然后下载运行远程的镜像</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker run xiaobinzhang/redis:0.0.1</span></span><br><span class="line">Unable to find image <span class="string">'xiaobinzhang/redis:0.0.1'</span> locally</span><br><span class="line">docker: Error response from daemon: pull access denied <span class="keyword">for</span> xiaobinzhang/redis, repository does not exist or may require <span class="string">'docker login'</span>.</span><br><span class="line">See <span class="string">'docker run --help'</span>.</span><br></pre></td></tr></table></figure>
+<p>出现上面这种情况的原因是，我把刚上传的这个仓库设置成为了private的，所以下载失败。登入hub.docker手动置为public，再次执行。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker run xiaobinzhang/redis:0.0.1</span></span><br><span class="line">Unable to find image <span class="string">'xiaobinzhang/redis:0.0.1'</span> locally</span><br><span class="line">0.0.1: Pulling from xiaobinzhang/redis</span><br><span class="line">Digest: sha256:1415c3ce635e1bb7e9d672c476f70fa9ddbe720f01d419babcdd2235103f7a85</span><br><span class="line">Status: Downloaded newer image <span class="keyword">for</span> xiaobinzhang/redis:0.0.1</span><br><span class="line">1:C 11 Apr 08:10:48.377 <span class="comment"># oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo</span></span><br><span class="line">1:C 11 Apr 08:10:48.377 <span class="comment"># Redis version=4.0.9, bits=64, commit=00000000, modified=0, pid=1, just started</span></span><br><span class="line">1:C 11 Apr 08:10:48.377 <span class="comment"># Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf</span></span><br><span class="line">1:M 11 Apr 08:10:48.379 * Running mode=standalone, port=6379.</span><br><span class="line">1:M 11 Apr 08:10:48.379 <span class="comment"># WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.</span></span><br><span class="line">1:M 11 Apr 08:10:48.379 <span class="comment"># Server initialized</span></span><br><span class="line">1:M 11 Apr 08:10:48.379 <span class="comment"># WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.</span></span><br><span class="line">1:M 11 Apr 08:10:48.379 <span class="comment"># WARNING you have Transparent Huge Pages (THP) support enabled in your kernel. This will create latency and memory usage issues with Redis. To fix this issue run the command 'echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled' as root, and add it to your /etc/rc.local in order to retain the setting after a reboot. Redis must be restarted after THP is disabled.</span></span><br><span class="line">1:M 11 Apr 08:10:48.379 * Ready to accept connections</span><br><span class="line">^C1:signal-handler (1523434363) Received SIGINT scheduling shutdown...</span><br><span class="line">1:M 11 Apr 08:12:43.744 <span class="comment"># User requested shutdown...</span></span><br><span class="line">1:M 11 Apr 08:12:43.744 * Saving the final RDB snapshot before exiting.</span><br><span class="line">1:M 11 Apr 08:12:43.753 * DB saved on disk</span><br><span class="line">1:M 11 Apr 08:12:43.754 <span class="comment"># Redis is now ready to exit, bye bye...</span></span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>执行成功，其实可以使用 docker pull xiaobinzhang/redis:0.0.1 的方式，拉去远程仓库的镜像。只要将应用，包括该应用运行时需要的一切依赖、环境、源码等等制作为一个镜像，那么无论在什么地方，只要docker可以启动，并且能够拉去你上传的镜像，这个镜像不需要其他的配置和安装，就可以运行起来。</p>
+<h4 id="Conclusion-containers"><a href="#Conclusion-containers" class="headerlink" title="Conclusion containers"></a>Conclusion containers</h4><p>到现在为止，已经掌握了docker的基本操作命令。在简单的使用中，已经完全足够了。</p>
+<ul>
+<li>查看镜像列表</li>
+<li>查看运行时容器</li>
+<li>查看全部容器</li>
+<li>运行容器，并指定后台运行，指定容器别名，映射端口</li>
+<li>删除容器，删除镜像</li>
+<li>Dockerfile的组成和关键字</li>
+<li>从Dockerfile构建一个镜像</li>
+<li>为镜像打版本标签</li>
+<li>推送本地镜像到远程仓库</li>
+<li>从远程仓库拉取镜像到本地  </li>
+</ul>
+<p>接下来将要学习，如何通过在服务中运行容器来扩展我们的引用。</p>
+<h3 id="Services"><a href="#Services" class="headerlink" title="Services"></a><a name="Services">Services</a></h3><p>官方链接：<a href="https://docs.docker.com/get-started/part3/" target="_blank" rel="noopener">https://docs.docker.com/get-started/part3/</a></p>
+<p>在分布式应用中，我们把不同的模块称之为服务。在Docker中，我们可以把一个容器称之为一个服务。那么问题就来了，既然是服务，我们就要考虑一个服务需要满足的一些要求，比如它对外暴露的端口，编码，以及负载均衡，等等。<br>幸运的是，在docker中定义这些是非常的容易的。在Docker平台，定义、运行、弹性扩展等操作，只需要编辑 <strong>docker-compose.yml</strong>文件即可。</p>
+<h5 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h5><p>touch一个名为docker-compose.yml的文件，复制以下信息到文件中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3&quot;</span><br><span class="line">services:</span><br><span class="line">  web:</span><br><span class="line">    # replace username/repo:tag with your name and image details</span><br><span class="line">    image: username/repo:tag</span><br><span class="line">    deploy:</span><br><span class="line">      replicas: 5</span><br><span class="line">      resources:</span><br><span class="line">        limits:</span><br><span class="line">          cpus: &quot;0.1&quot;</span><br><span class="line">          memory: 50M</span><br><span class="line">      restart_policy:</span><br><span class="line">        condition: on-failure</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;80:80&quot;</span><br><span class="line">    networks:</span><br><span class="line">      - webnet</span><br><span class="line">networks:</span><br><span class="line">  webnet:</span><br></pre></td></tr></table></figure>
+<p>这个<strong>docker-compose.yml文件告诉Docker需要完成以下几件事情</strong></p>
+<ul>
+<li>从远程仓库拉去镜像</li>
+<li>启动5个镜像的实例，限制每个实例最多使用10%的CPU和50M的内存</li>
+<li>当着6个实例只要有一个失败时立即重启一个代替</li>
+<li>映射端口80:80</li>
+<li>从服务80端口对服务内部实例做负载均衡</li>
+<li>设置默认的负载均衡网络</li>
+</ul>
+<blockquote>
+<p><strong>NOTE ：</strong>yml文件的缩进格式不要写错，否则会在执行下面指令的时候，会报错。</p>
+</blockquote>
+<h5 id="Run-your-new-load-balanced-app"><a href="#Run-your-new-load-balanced-app" class="headerlink" title="Run your new load-balanced app"></a>Run your new load-balanced app</h5><p>运行一个新的负载均衡应用。</p>
+<p>首先执行下面这条命令</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos dkt2]<span class="comment"># docker swarm init</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>NOTE :</strong> 在稍后的章节在解释<strong>docker swarm init</strong>这个命令的含义。但是此时如果不先执行这条语句的话，会抛一个错误“this node is not a swarm manager”。</p>
+</blockquote>
+<p>现在，来运行这个应用，此时我们只有一个docker-compose.yml文件，并且执行了一个<strong>docker swarm init</strong>命令。下面我们在给这个应用起一个名字：<strong>getstartedlab</strong>。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos dkt3]<span class="comment"># docker stack deploy -c docker-compose.yml getstartedlab</span></span><br><span class="line">Creating network getstartedlab_webnet</span><br><span class="line">Creating service getstartedlab_web</span><br></pre></td></tr></table></figure>
+<p>执行完成后，如果我们的这个镜像是被部署在一台主机上的话，那么此时这个一个单独的服务栈运行了5个容器实例。接下来我们来验证一下。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos dkt3]<span class="comment"># docker service ls</span></span><br><span class="line">ID                  NAME                MODE                REPLICAS            IMAGE                              PORTS</span><br><span class="line">dlo3u47w91el        getstartedlab_web   replicated          5/5                 xiaobinzhang/friendlyhello:0.0.1   *:80-&gt;80/tcp</span><br></pre></td></tr></table></figure>
+<p>现在可以看到，机器中有一个以刚刚我们给命名为前缀的web服务:<strong>getstartedlab_web</strong>,并且可以看到这个服务的ID、复制的数量、镜像名和对外的端口。</p>
+<p>一个单独运行的容器实例被称为<strong>task</strong>。每一个task都有一个唯一的ID，按照<strong>docker-compose.yml</strong>文件中配置的<strong>replicas</strong>个数，而启动几个task。用下面命令来列出这个服务的全部task列表。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos dkt2]<span class="comment"># docker service ps getstartedlab_web </span></span><br><span class="line">ID                  NAME                  IMAGE                              NODE                DESIRED STATE       CURRENT STATE            ERROR               PORTS</span><br><span class="line">eevy540v8ni6        getstartedlab_web.1   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 21 minutes ago                       </span><br><span class="line">29k0z7sjhams        getstartedlab_web.2   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 21 minutes ago                       </span><br><span class="line">2h7ttm705fll        getstartedlab_web.3   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 21 minutes ago                       </span><br><span class="line">pszqwmkjffdp        getstartedlab_web.4   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 21 minutes ago                       </span><br><span class="line">swiw8plaoof0        getstartedlab_web.5   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 21 minutes ago                       </span><br><span class="line">[root@VM_0_3_centos dkt2]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>现在执行以下<strong>curl -4 <a href="http://localhost" target="_blank" rel="noopener">http://localhost</a></strong>来看一下负载均衡的效果。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># curl -4 http://localhost</span></span><br><span class="line">&lt;h3&gt;Hello World!&lt;/h3&gt;&lt;b&gt;Hostname:&lt;/b&gt; 54ef1e81d62d&lt;br/&gt;&lt;b&gt;Visits:&lt;/b&gt; &lt;i&gt;cannot connect to Redis, counter disabled&lt;/i&gt;[root@VM_0_3_centos ~]<span class="comment"># </span></span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment"># curl -4 http://localhost</span></span><br><span class="line">&lt;h3&gt;Hello World!&lt;/h3&gt;&lt;b&gt;Hostname:&lt;/b&gt; 04b047c14f53&lt;br/&gt;&lt;b&gt;Visits:&lt;/b&gt; &lt;i&gt;cannot connect to Redis, counter disabled&lt;/i&gt;[root@VM_0_3_centos ~]<span class="comment"># </span></span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment"># curl -4 http://localhost</span></span><br><span class="line">&lt;h3&gt;Hello World!&lt;/h3&gt;&lt;b&gt;Hostname:&lt;/b&gt; abb6fb33581b&lt;br/&gt;&lt;b&gt;Visits:&lt;/b&gt; &lt;i&gt;cannot connect to Redis, counter disabled&lt;/i&gt;[root@VM_0_3_centos ~]<span class="comment"># </span></span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment"># curl -4 http://localhost</span></span><br><span class="line">&lt;h3&gt;Hello World!&lt;/h3&gt;&lt;b&gt;Hostname:&lt;/b&gt; 446c7e5fcff2&lt;br/&gt;&lt;b&gt;Visits:&lt;/b&gt; &lt;i&gt;cannot connect to Redis, counter disabled&lt;/i&gt;[root@VM_0_3_centos ~]<span class="comment"># </span></span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment"># curl -4 http://localhost</span></span><br><span class="line">&lt;h3&gt;Hello World!&lt;/h3&gt;&lt;b&gt;Hostname:&lt;/b&gt; 09591611aae3&lt;br/&gt;&lt;b&gt;Visits:&lt;/b&gt; &lt;i&gt;cannot connect to Redis, counter disabled&lt;/i&gt;[root@VM_0_3_centos ~]<span class="comment"># </span></span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker container ls -q</span></span><br><span class="line">abb6fb33581b</span><br><span class="line">54ef1e81d62d</span><br><span class="line">446c7e5fcff2</span><br><span class="line">04b047c14f53</span><br><span class="line">09591611aae3</span><br></pre></td></tr></table></figure>
+<p>可以看到，每次访问结果返回的Hostname都不一样，并且Hostname都在这个web服务的ID列表中。</p>
+<h5 id="Scale-the-app"><a href="#Scale-the-app" class="headerlink" title="Scale the app"></a>Scale the app</h5><p>弹性扩展应用。可以通过修改<strong>docker-compose.yml</strong>文件中<strong>replicas</strong>的值来对该服务进行弹性扩容。修改之后，运行<strong>docker stack deploy</strong>命令即可生效。</p>
+<p>现在修改<strong>replicas</strong>的值由5改为4。并且重新部署。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos dkt3]<span class="comment"># docker stack deploy -c docker-compose.yml  getstartedlab</span></span><br><span class="line">Updating service getstartedlab_web (id: dlo3u47w91el1r259c2tt2fp1)</span><br></pre></td></tr></table></figure>
+<p>几秒钟后，检查一下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker service ls</span></span><br><span class="line">ID                  NAME                MODE                REPLICAS            IMAGE                              PORTS</span><br><span class="line">dlo3u47w91el        getstartedlab_web   replicated          4/4                 xiaobinzhang/friendlyhello:0.0.1   *:80-&gt;80/tcp</span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker service ps getstartedlab_web </span></span><br><span class="line">ID                  NAME                  IMAGE                              NODE                DESIRED STATE       CURRENT STATE            ERROR               PORTS</span><br><span class="line">eevy540v8ni6        getstartedlab_web.1   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 34 minutes ago                       </span><br><span class="line">29k0z7sjhams        getstartedlab_web.2   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 34 minutes ago                       </span><br><span class="line">2h7ttm705fll        getstartedlab_web.3   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 34 minutes ago                       </span><br><span class="line">pszqwmkjffdp        getstartedlab_web.4   xiaobinzhang/friendlyhello:0.0.1   VM_0_3_centos       Running             Running 34 minutes ago                       </span><br><span class="line">[root@VM_0_3_centos ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>现在可以看到，机器中的service的<strong>REPLICAS</strong>信息已经发生了变化。并且运行中的容器实例也由之前的5个变为了4个。Docker平台可以就地更新，不需要杀死一些进程或容器。</p>
+<h5 id="Take-down-the-app-and-the-swarm"><a href="#Take-down-the-app-and-the-swarm" class="headerlink" title="Take down the app and the swarm"></a>Take down the app and the swarm</h5><p>卸载应用集群。</p>
+<p>使用<strong>docker stack rm</strong>卸载应用</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos dkt3]<span class="comment"># docker stack rm getstartedlab </span></span><br><span class="line">Removing service getstartedlab_web</span><br><span class="line">Removing network getstartedlab_webnet</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos ~]<span class="comment"># docker service ls</span></span><br><span class="line">ID                  NAME                MODE                REPLICAS            IMAGE               PORTS</span><br></pre></td></tr></table></figure>
+<p>现在已近卸载了<strong>getstartedlab</strong>应用</p>
+<p>再卸载swarm，swarm内容在今后的章节中介绍。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_3_centos dkt3]<span class="comment"># docker swarm leave --force</span></span><br><span class="line">Node left the swarm.</span><br></pre></td></tr></table></figure>
+<h4 id="Conclusion-services"><a href="#Conclusion-services" class="headerlink" title="Conclusion services"></a>Conclusion services</h4><p>到目前为止，已近掌握了服务的概念，通过services的学习，掌握了以下结果知识点：</p>
+<ul>
+<li>docker-compose.yml的配置</li>
+<li>通过修改配置文件达到服务的弹性扩展</li>
+<li>从docker-compose.yml启动服务的步骤</li>
+<li>Docker平台就地更新的特性</li>
+<li>服务的卸载和swarm的卸载</li>
+</ul>
+<p>现在已近在容器学习中迈出了巨大的一步，在接下来，将学习在一个Docker集群中，怎样把我们的应用以真正的集群的方式运行。</p>
+<h3 id="Swarms"><a href="#Swarms" class="headerlink" title="Swarms"></a><a name="Swarms">Swarms</a></h3><p>集群。接下来将继续学习在集群上部署我们的应用，在多台机器上运行。</p>
+<h3 id="Stacks"><a href="#Stacks" class="headerlink" title="Stacks"></a><a name="Stacks">Stacks</a></h3><p>栈。</p>
+<h3 id="Deploy-your-app"><a href="#Deploy-your-app" class="headerlink" title="Deploy your app"></a><a name="Dyapp">Deploy your app</a></h3><p>部署应用。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总结。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>如果您愿意，可以在这里对博主打赏</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="张晓斌 WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="张晓斌 Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Docker/" rel="tag"># Docker</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/09/docker-learning-getDocker/" rel="next" title="docker-learning-getDocker">
+                <i class="fa fa-chevron-left"></i> docker-learning-getDocker
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/12/db2-use-notes/" rel="prev" title="db2-use-notes">
+                db2-use-notes <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="SOHUCS"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">张晓斌</p>
+              <p class="site-description motion-element" itemprop="description">个人博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/xiaobin-zhang" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:18235442561@163.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.abstiger.com/" title="abstiger的个人博客" target="_blank">abstiger的个人博客</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.dkvirus.com/" title="dkvirus的个人博客" target="_blank">dkvirus的个人博客</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.reallinxu.com/" title="reallinxu的个人博客" target="_blank">reallinxu的个人博客</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.xiajunyi.com/" title="xiajunyi的个人博客" target="_blank">xiajunyi的个人博客</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://tech.meituan.com/" title="美团技术团队" target="_blank">美团技术团队</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主要内容"><span class="nav-number">2.</span> <span class="nav-text">主要内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Orientation"><span class="nav-number">2.1.</span> <span class="nav-text">Orientation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Images-and-containers"><span class="nav-number">2.1.1.</span> <span class="nav-text">Images and containers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Containers-and-virtual-machines"><span class="nav-number">2.1.2.</span> <span class="nav-text">Containers and virtual machines</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#简单命令"><span class="nav-number">2.1.3.</span> <span class="nav-text">简单命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conclusion-orientation"><span class="nav-number">2.1.4.</span> <span class="nav-text">Conclusion orientation</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Containers"><span class="nav-number">2.2.</span> <span class="nav-text">Containers</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Define-a-container-with-Dockerfile"><span class="nav-number">2.2.1.</span> <span class="nav-text">Define a container with Dockerfile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#The-app-itself"><span class="nav-number">2.2.2.</span> <span class="nav-text">The app itself</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#requirements-txt"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">requirements.txt</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#app-py"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">app.py</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Run-app"><span class="nav-number">2.2.3.</span> <span class="nav-text">Run app</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Share-your-image"><span class="nav-number">2.2.4.</span> <span class="nav-text">Share your image</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Login"><span class="nav-number">2.2.4.1.</span> <span class="nav-text">Login</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Tag-the-image"><span class="nav-number">2.2.4.2.</span> <span class="nav-text">Tag the image</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Publish-the-image"><span class="nav-number">2.2.4.3.</span> <span class="nav-text">Publish the image</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Pull-and-run-the-image-from-the-remote-repository"><span class="nav-number">2.2.4.4.</span> <span class="nav-text">Pull and run the image from the remote repository</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conclusion-containers"><span class="nav-number">2.2.5.</span> <span class="nav-text">Conclusion containers</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Services"><span class="nav-number">2.3.</span> <span class="nav-text">Services</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">2.3.0.1.</span> <span class="nav-text">docker-compose.yml</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Run-your-new-load-balanced-app"><span class="nav-number">2.3.0.2.</span> <span class="nav-text">Run your new load-balanced app</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Scale-the-app"><span class="nav-number">2.3.0.3.</span> <span class="nav-text">Scale the app</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Take-down-the-app-and-the-swarm"><span class="nav-number">2.3.0.4.</span> <span class="nav-text">Take down the app and the swarm</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conclusion-services"><span class="nav-number">2.3.1.</span> <span class="nav-text">Conclusion services</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Swarms"><span class="nav-number">2.4.</span> <span class="nav-text">Swarms</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stacks"><span class="nav-number">2.5.</span> <span class="nav-text">Stacks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-your-app"><span class="nav-number">2.6.</span> <span class="nav-text">Deploy your app</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张晓斌</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.6"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.6"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.6"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.6"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.6"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cytwAGfKL';
+      var conf = 'a81bbef12da43b92ee9853c9868226f0';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("FFhMzzTSjAVhbEagH8JcaaOo-gzGzoHsz", "8JfttbM9dQo6hyQTcix83nGC");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
